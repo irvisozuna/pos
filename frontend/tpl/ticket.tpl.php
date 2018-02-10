@@ -152,9 +152,9 @@ $id=GETPOST('id');
 	<div class="infos">
 		<p class="adresse"><?php echo $mysoc->name; ?><br>
 		<?php echo $mysoc->address; ?><br>
-		<?php echo 'CP '.$mysoc->zip.' '.$mysoc->town.' , Sonora.'; ?><br>
+		<?php echo 'CP '.$mysoc->zip.' '.$mysoc->town.' , SONORA.'; ?><br>
 		<?php print 'Teléfono '.$conf->global->TICK_TEL_SHOP; ?><br />
-		<?php print 'RFC '.$conf->global->TICK_RFC_SHOP; ?><br /><br />
+		<?php print 'R.F.C. '.$conf->global->MAIN_INFO_SIREN; ?><br /><br />
 		
 		<i><?php print $langs->trans("Vendor").': '.$userstatic->firstname." ".$userstatic->lastname; ?></i><br />
 
