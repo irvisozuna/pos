@@ -30,7 +30,7 @@ $id=GETPOST('id');
 
 	body {
 		font-family: "Arial", Arial, serif;
-		/*font-size: 0.5em;*/
+		font-size: 12px;
 		position: relative;
 	}
 
@@ -40,14 +40,14 @@ $id=GETPOST('id');
 
 		.adresse {
 /* 			float: left; */
-			font-size: 10px;
+			font-size: 12px;
 		}
 
 		.date_heure {
 			position: absolute;
 			top: 0;
 			right: 0;
-			font-size: 10px;
+			font-size: 12px;
 		}
 
 		.infos {
