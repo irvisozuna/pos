@@ -1,0 +1,48 @@
+Archivo tpv.php
+
+Ocultar botones que el usuario no necesita
+se creo un nuevo objeto de la clase usuario, para tomar los 
+permisos del usuario de caja, sin importar que usuario este
+logeado en el backend.
+
+Linea 17
+Se agrego el siguiente código
+
+$usertpv=new User($db);
+$usertpv->fetch($_SESSION["uid"]);
+$usertpv->getrights();
+
+En linea 123 se oculta o muestra el boton para realizar el corte
+de caja
+
+<?php 
+	if($usertpv->rights->pos->closecash){
+?>
+    <a class="top_closecash but"  id="id_btn_closecash" href="#" title="<?php echo $langs->trans("CashAccount"); ?>"></a>
+<?php }?>
+
+En linea 295 se oculta o muestra el boton para realizar una factura
+simplificada
+<?php if($usertpv->rights->pos->facturesim){?>
+<input type="button" id="id_btn_facsimPay" value="<?php //echo $langs->trans("Facturesim"); ?>" class="btn3dbig">
+<?php }?>
+
+
+Archivo modPos.class.php
+
+linea 212 se agrego el siguiente codigo para poder  configurar
+los accesos a factura simplificada y a cambio de usuario
+
+$r++;
+$this->rights[$r][0] = 4000057;
+$this->rights[$r][1] = 'Factura Simplificada';
+$this->rights[$r][2] = 'a';
+$this->rights[$r][3] = 1;
+$this->rights[$r][4] = 'facturesim';
+		
+$r++;
+$this->rights[$r][0] = 4000058;
+$this->rights[$r][1] = 'Cambiar Usuario';
+$this->rights[$r][2] = 'a';
+$this->rights[$r][3] = 1;
+$this->rights[$r][4] = 'changeuser';

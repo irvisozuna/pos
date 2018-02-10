@@ -1,0 +1,39 @@
+se añade archivo pos/lib/numeros_a_letras.php
+
+se modifica
+
+pos/backend/class/ticketstats.class.php
+
+include_once DOL_DOCUMENT_ROOT . "/core/class/stats.class.php";
+include_once DOL_DOCUMENT_ROOT . "/ticket/class/ticket.class.php";
+include_once DOL_DOCUMENT_ROOT . "/fourn/class/fournisseur.ticket.class.php";
+
+se substituye por
+
+include_once DOL_DOCUMENT_ROOT . "/core/class/stats.class.php";
+if(is_file(DOL_DOCUMENT_ROOT."/pos/backend/class/ticket.class.php")){
+
+include_once DOL_DOCUMENT_ROOT . "/pos/backend/class/ticket.class.php";
+} else {
+
+include_once DOL_DOCUMENT_ROOT . "/custom/pos/backend/class/ticket.class.php";
+}
+//include_once DOL_DOCUMENT_ROOT . "/fourn/class/fournisseur.ticket.class.php";
+
+pos/frontend/tpl/ticket.tpl.php
+
+se añade 
+
+if(is_file(DOL_DOCUMENT_ROOT.'/pos/lib/numeros_a_letras.php')){ //from htdocs
+    require_once(DOL_DOCUMENT_ROOT.'/pos/lib/numeros_a_letras.php');
+} else {
+    require_once(DOL_DOCUMENT_ROOT.'/custom/pos/lib/numeros_a_letras.php'); //from custom
+}
+
+linea 194
+
+echo '<tr><td colspan="2">('.numtoletras($object->total_ttc).')</td></tr>';
+
+para mostrar resultado con letras
+
+

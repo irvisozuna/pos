@@ -1,0 +1,2 @@
+[12-Oct-2016 17:34:33 America/Chicago] PHP Fatal error:  Call to a member function fetch_object() on a non-object in /home/u259385/public_html/ERP/core/db/mysqli.class.php on line 293
+[12-Oct-2016 17:36:59 America/Chicago] PHP Fatal error:  Call to a member function fetch_object() on a non-object in /home/u259385/public_html/ERP/core/db/mysqli.class.php on line 293
