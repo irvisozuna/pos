@@ -497,7 +497,7 @@ if ($result > 0)
 	//show associated facture
 	print '<table width="100%"><tr><td width="50%" valign="top">';
 	print '<a name="builddoc"></a>'; // ancre
-	$somethingshown=$object->showLinkedObjectBlock();
+	//$somethingshown=$object->showLinkedObjectBlock();
 	print '</td><td valign="top" width="50%"></td>';
 	
 	if (GETPOST('action','alpha') == 'delete')

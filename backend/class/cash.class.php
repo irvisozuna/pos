@@ -1012,7 +1012,17 @@ class ControlCash extends CommonObject
 		       ),0)
 		     )amount   
            "; */
-        $sql="
+        if($conf->global->POS_SHOW_CASH){
+            $sql = "SELECT (
+		    (IFNULL((SELECT sum(customer_pay) total_ttc FROM llx_pos_ticket c WHERE fk_control is null
+		                 AND c.fk_cash='3' AND c.entity='1' AND type='0'
+		         ),0))
+  +(IFNULL((SELECT sum(IF(difpayment<0, difpayment, 0)) total_ttc FROM llx_pos_ticket c WHERE fk_control is null
+		                 AND c.fk_cash='3' AND c.entity='1' AND type='0'
+		         ),0))
+		     )amount";
+        }else{
+            $sql="
           SELECT (
 		    (IFNULL((SELECT sum(total_ttc) total_ttc FROM ".MAIN_DB_PREFIX."pos_ticket c WHERE fk_control is null
 		                 AND c.fk_cash='".$_SESSION['TERMINAL_ID']."' AND c.entity='".$conf->entity."' AND type='0'
@@ -1026,6 +1036,9 @@ class ControlCash extends CommonObject
 		       ),0)
 		     )amount
            ";
+        }
+
+
 		dol_syslog('ESTE QUERY CIERRA: '.$sql);
 		$result=$db->query($sql);
         if ($result)

@@ -130,6 +130,8 @@ UserTerminalCard=Usuario Terminal de Tarjeta
 #Ticket
 CloseandArching=Cierres y arqueos
 TicketsCustomers=Listado
+TicketsPendingPay=Pendientes de pago por apartado
+apartado= Apartado
 
 #Docs
 Facture=Factura

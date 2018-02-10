@@ -145,6 +145,8 @@ if ($action == 'confirm_paiement' && $confirm == 'yes')
 
     $datepaye = dol_mktime(12, 0, 0, $_POST['remonth'], $_POST['reday'], $_POST['reyear']);
 
+    $ticket = new Ticket($db);
+
     $db->begin();
 
     // Creation of payment line
@@ -154,6 +156,7 @@ if ($action == 'confirm_paiement' && $confirm == 'yes')
     $paiement->paiementid   = dol_getIdFromCode($db,$_POST['paiementcode'],'c_paiement');
     $paiement->num_paiement = $_POST['num_paiement'];
     $paiement->note         = $_POST['comment'];
+    $paiement->ref          = $ticket->ref_int;
 
     if (! $error)
     {
@@ -163,6 +166,7 @@ if ($action == 'confirm_paiement' && $confirm == 'yes')
             $errmsg=$paiement->error;
             $error++;
         }
+
     }
 
     if (! $error)
@@ -190,7 +194,6 @@ if ($action == 'confirm_paiement' && $confirm == 'yes')
                 else $invoiceid=$ticketid;
             }
         }
-        
         
         if ($invoiceid > 0) 
         {
@@ -288,7 +291,7 @@ if ($action == 'create' || $action == 'confirm_paiement' || $action == 'add_paie
         print '<table class="border" width="100%">';
 
         // Third party
-        print '<tr><td><span class="fieldrequired">'.$langs->trans('Company').'</span></td><td colspan="2">'.$ticket->client->getNomUrl(4)."</td></tr>\n";
+       // print '<tr><td><span class="fieldrequired">'.$langs->trans('Company').'</span></td><td colspan="2">'.$ticket->client->getNomUrl(4)."</td></tr>\n";
 
         // Date payment
         print '<tr><td><span class="fieldrequired">'.$langs->trans('Date').'</span></td><td>';

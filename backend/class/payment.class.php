@@ -149,9 +149,8 @@ class Payment extends CommonObject
 
 
 		$this->db->begin();
-
-		$sql = "INSERT INTO ".MAIN_DB_PREFIX."paiement (datec, datep, amount, fk_paiement, num_paiement, note, fk_user_creat)";
-		$sql.= " VALUES ('".$this->db->idate($now)."', '".$this->db->idate($this->datepaye)."', '".$totalamount."', ".$this->paiementid.", '".$this->num_paiement."', '".$this->db->escape($this->note)."', ".$user->id.")";
+		$sql = "INSERT INTO ".MAIN_DB_PREFIX."paiement (ref,datec, datep, amount, fk_paiement, num_paiement, note, fk_user_creat)";
+		$sql.= " VALUES ('".$this->ref."','".$this->db->idate($now)."', '".$this->db->idate($this->datepaye)."', '".$totalamount."', ".$this->paiementid.", '".$this->num_paiement."', '".$this->db->escape($this->note)."', ".$user->id.")";
 
 		dol_syslog(get_class($this)."::Create insert paiement sql=".$sql);
 		$resql = $this->db->query($sql);

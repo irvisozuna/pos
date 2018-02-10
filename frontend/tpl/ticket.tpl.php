@@ -40,14 +40,14 @@ $id=GETPOST('id');
 
 		.adresse {
 /* 			float: left; */
-			font-size: 15px;
+			font-size: 10px;
 		}
 
 		.date_heure {
 			position: absolute;
 			top: 0;
 			right: 0;
-			font-size: 13px;
+			font-size: 10px;
 		}
 
 		.infos {
@@ -74,7 +74,7 @@ $id=GETPOST('id');
 		margin-top: 16px;
 		width: 30%;
 		float: right;
-		font-size:13px;
+		font-size:10px;
 		text-align: right;
 	}
 
@@ -113,9 +113,12 @@ $id=GETPOST('id');
 		
 			$object=new Ticket($db);
 			$result=$object->fetch($id,$ref);
-			
+
+
 			$userstatic=new User($db);
 			$userstatic->fetch($object->user_close);
+
+
 			?><br><br>
 			<?php if(!empty($object->fk_place))
 			{
@@ -139,18 +142,21 @@ $id=GETPOST('id');
 	<div class="logo">
 	<?php 
 	print '<p class="date_heure" align="right">'.$label."<br>".dol_print_date($object->date_closed,'dayhourtext').'</p><br>';
-	print '<img src="'.DOL_URL_ROOT.'/viewimage.php?modulepart=companylogo&amp;file='.urlencode('/thumbs/'.$mysoc->logo_small).'">';
+	//print '<img src="'.DOL_URL_ROOT.'/viewimage.php?modulepart=companylogo&amp;file='.urlencode('/thumbs/'.$mysoc->logo_small).'">';
 	
 	?>
 	</div>
+    <?php
+   // print_r($conf->global); die();
+    ?>
 	<div class="infos">
 		<p class="adresse"><?php echo $mysoc->name; ?><br>
 		<?php echo $mysoc->address; ?><br>
-		<?php echo 'CP '.$mysoc->zip.' '.$mysoc->town.' , Nayarit.'; ?><br>
+		<?php echo 'CP '.$mysoc->zip.' '.$mysoc->town.' , Sonora.'; ?><br>
 		<?php print 'Teléfono '.$conf->global->TICK_TEL_SHOP; ?><br />
 		<?php print 'RFC '.$conf->global->TICK_RFC_SHOP; ?><br /><br />
 		
-		<i><?php print $langs->trans("Vendor").': '.$userstatic->firstname; ?></i><br />
+		<i><?php print $langs->trans("Vendor").': '.$userstatic->firstname." ".$userstatic->lastname; ?></i><br />
 
 		<p>
 		
@@ -161,7 +167,7 @@ $id=GETPOST('id');
         <?php
             if(!empty($object->remise_percent)) echo ('<tr class="titres" ><th colspan="4"><center>Dto. Gral. '.$object->remise_percent.'%<center></th></tr>');
         ?>
-	<tr class="titres"><th><?php print $langs->trans("Label"); ?></th><th><?php print $langs->trans("Qty")."/".$langs->trans("Price"); ?></th><th><?php print $langs->trans("DiscountLineal"); ?></th><th><?php print $langs->trans("Total"); ?></th></tr>
+	<tr class="titres"><th>Descripción</th><th><?php print $langs->trans("Qty")."/".$langs->trans("Price"); ?></th><th><?php print $langs->trans("DiscountLineal"); ?></th><th>Importe</th></tr>
 
 	<?php
 		
@@ -174,14 +180,15 @@ $id=GETPOST('id');
 				foreach ($object->lines as $line)
 				{
 					$totalline= $line->qty*$line->subprice;
-					echo ('<tr class="articulos"><td align="left">'.$line->libelle.'</td><td align="right">'.$line->qty." * ".number_format($line->price,2).'</td><td align="right">'.$line->remise_percent.'%</td><td class="total">'.number_format($totalline,2).' '.$langs->trans(currency_name($conf->currency)).'</td></tr>'."\n");
+					echo ('<tr class="articulos"><td align="left">'.$line->libelle.'</td><td align="right">'.$line->qty." * ".number_format($line->price,2).'</td><td align="right">'.$line->remise_percent.'%</td><td class="total">'.number_format($totalline,2).' '.$conf->global->MAIN_MONNAIE.'</td></tr>'."\n"); //$langs->trans(currency_name($conf->currency))
 					if(isset($line->note_public)) echo('<tr class="articulos"><td align="left" style="font-size:smaller">'.$line->note.'</td><td colspan="3"></td>');
                                         $subtotal+=$totalline;
 				}
 			}
 			else 
 			{
-				echo ('<p>'.print $langs->trans("ErrNoArticles").'</p>'."\n");
+				//echo ('<p>'. print $langs->trans("ErrNoArticles").'</p>'."\n");
+				echo '<p>'.$langs->trans("ErrNoArticles").'</p>'."\n";
 			}
 					
 		}
@@ -197,15 +204,15 @@ $id=GETPOST('id');
 			echo '<tr><th nowrap="nowrap">'.$langs->trans("Subtotal").'</th><td nowrap="nowrap">'.number_format($subtotal,2)."</td></tr>\n";
 			echo '<tr><th nowrap="nowrap">'.$langs->trans("DiscountGlobal").'</th><td nowrap="nowrap">'.$object->remise_percent."%</td></tr>\n";
 		}*/
-		echo '<tr><th nowrap="nowrap">'.$langs->trans("TotalHT").'</th><td nowrap="nowrap">'.number_format($object->total_ht,2)." ".$langs->trans(currency_name($conf->currency))."</td></tr>\n";
-		echo '<tr><th nowrap="nowrap">'.$langs->trans("TotalVAT").'</th><td nowrap="nowrap">'.number_format($object->total_tva,2)." ".$langs->trans(currency_name($conf->currency))."</td></tr>\n";
+		//echo '<tr><th nowrap="nowrap">'.$langs->trans("TotalHT").'</th><td nowrap="nowrap">'.number_format($object->total_ht,2)." ".$conf->global->MAIN_MONNAIE."</td></tr>\n";
+		//echo '<tr><th nowrap="nowrap">'.$langs->trans("TotalVAT").'</th><td nowrap="nowrap">'.number_format($object->total_tva,2)." ".$conf->global->MAIN_MONNAIE."</td></tr>\n";
 		if($object->total_localtax1!=0){
-			echo '<tr><th nowrap="nowrap">'.$langs->trans("TotalLT1ES").'</th><td nowrap="nowrap">'.number_format($object->total_localtax1,2)." ".$langs->trans(currency_name($conf->currency))."</td></tr>\n";
+			echo '<tr><th nowrap="nowrap">'.$langs->trans("TotalLT1ES").'</th><td nowrap="nowrap">'.number_format($object->total_localtax1,2)." ".$conf->global->MAIN_MONNAIE."</td></tr>\n";
 		}
 		if($object->total_localtax2!=0){
-			echo '<tr><th nowrap="nowrap">'.$langs->trans("TotalLT2ES").'</th><td nowrap="nowrap">'.number_format($object->total_localtax2,2)." ".$langs->trans(currency_name($conf->currency))."</td></tr>\n";
+			echo '<tr><th nowrap="nowrap">'.$langs->trans("TotalLT2ES").'</th><td nowrap="nowrap">'.number_format($object->total_localtax2,2)." ".$conf->global->MAIN_MONNAIE."</td></tr>\n";
 		}
-		echo '<tr><th nowrap="nowrap">'.$langs->trans("TotalTTC").'</th><td nowrap="nowrap">'.number_format($object->total_ttc,2)." ".$langs->trans(currency_name($conf->currency))."</td></tr>\n";
+		echo '<tr><th nowrap="nowrap">'.$langs->trans("TotalTTC").'</th><td nowrap="nowrap">'.number_format($object->total_ttc,2)." ".$conf->global->MAIN_MONNAIE."</td></tr>\n";
 		echo '<tr><td colspan="2">('.numtoletras($object->total_ttc).')</td></tr>';
 		echo '<tr><td></td></tr>';
 
@@ -225,23 +232,23 @@ $id=GETPOST('id');
 				while($rslv=$db->fetch_object($rqsv)){
 					$pay2=$pay2+$rslv->amount;
 					echo '<tr><th nowrap="nowrap">'.$langs->trans("Payment").'</th><td nowrap="nowrap">'.$terminal->select_Paymentname($rslv->id)."</td></tr>\n";
-					echo '<tr><th nowrap="nowrap">'.$langs->trans("CustomerPay").'</th><td nowrap="nowrap">'.number_format($rslv->amount,2)." ".$langs->trans(currency_name($conf->currency))."</td></tr>\n";
+					echo '<tr><th nowrap="nowrap">'.$langs->trans("CustomerPay").'</th><td nowrap="nowrap">'.number_format($rslv->amount,2)." ".$conf->global->MAIN_MONNAIE."</td></tr>\n";
 				}
 				$difpayment=$object->total_ttc - $pay2;
 				if($difpayment<0)
-					echo '<tr><th nowrap="nowrap">'.$langs->trans("CustomerRet").'</th><td nowrap="nowrap">'.number_format(abs($difpayment),2)." ".$langs->trans(currency_name($conf->currency))."</td></tr>\n";
+					echo '<tr><th nowrap="nowrap">'.$langs->trans("CustomerRet").'</th><td nowrap="nowrap">'.number_format(abs($difpayment),2)." ".$conf->global->MAIN_MONNAIE."</td></tr>\n";
 				else
-					echo '<tr><th nowrap="nowrap">'.$langs->trans("CustomerDeb").'</th><td nowrap="nowrap">'.number_format(abs($difpayment),2)." ".$langs->trans(currency_name($conf->currency))."</td></tr>\n";
+					echo '<tr><th nowrap="nowrap">'.$langs->trans("CustomerDeb").'</th><td nowrap="nowrap">'.number_format(abs($difpayment),2)." ".$conf->global->MAIN_MONNAIE."</td></tr>\n";
 			}else{
 				echo '<tr><th nowrap="nowrap">'.$langs->trans("Payment").'</th><td nowrap="nowrap">'.$terminal->select_Paymentname($object->mode_reglement_id)."</td></tr>\n";
 			/* if($object->mode_reglement_id==$terminal->fk_modepaycash)
 			{ */
-				echo '<tr><th nowrap="nowrap">'.$langs->trans("CustomerPay").'</th><td nowrap="nowrap">'.number_format($object->customer_pay,2)." ".$langs->trans(currency_name($conf->currency))."</td></tr>\n";
+				echo '<tr><th nowrap="nowrap">'.$langs->trans("CustomerPay").'</th><td nowrap="nowrap">'.number_format($object->customer_pay,2)." ".$conf->global->MAIN_MONNAIE."</td></tr>\n";
 				$difpayment=$object->total_ttc - $object->customer_pay;
 				if($difpayment<0)
-					echo '<tr><th nowrap="nowrap">'.$langs->trans("CustomerRet").'</th><td nowrap="nowrap">'.number_format(abs($difpayment),2)." ".$langs->trans(currency_name($conf->currency))."</td></tr>\n";
+					echo '<tr><th nowrap="nowrap">'.$langs->trans("CustomerRet").'</th><td nowrap="nowrap">'.number_format(abs($difpayment),2)." ".$conf->global->MAIN_MONNAIE."</td></tr>\n";
 				else
-					echo '<tr><th nowrap="nowrap">'.$langs->trans("CustomerDeb").'</th><td nowrap="nowrap">'.number_format(abs($difpayment),2)." ".$langs->trans(currency_name($conf->currency))."</td></tr>\n";
+					echo '<tr><th nowrap="nowrap">'.$langs->trans("CustomerDeb").'</th><td nowrap="nowrap">'.number_format(abs($difpayment),2)." ".$conf->global->MAIN_MONNAIE."</td></tr>\n";
 			//}
 			}
 		}
@@ -268,8 +275,15 @@ echo '
 
 <a class="lien" href="#" onclick="javascript: window.close(); return(false);">Fermer cette fenetre</a>
 
+
 <table id="fb-addr">
-	<tr><td><i>Síguenos en Facebook <b><?echo str_replace("https://facebook.com","",$conf->global->TICK_FB_URL);?></b></i></td></tr>
+	<tr><td><i>**NO SE REALIZAN DEVOLUCIONES EN EFECTIVO.</b></i></td></tr>
+	<tr><td><i>*LIMITE PARA HACER CAMBIOS 3 DÍAS.</b></i></td></tr>
+	<tr><td><i>INICIA EL PRIMER DÍA POSTERIOR A LA COMPRA</b></i></td></tr>
+	<tr><td><i>*MERCANCIA CON DESCUENTO O EN PROMOCIÓN NO TIENE CAMBIOS, NI DEVOLUCIONES</b></i></td></tr>
+	<tr><td><i>*NO SE REALIZAN CAMBIOS EXTEMPORANEOS O SIN TICKET DE COMPRA</b></i></td></tr>
+	<tr><td><i>*LA MERCANCIA DEBE PRESENTARSE CON SU ETIQUETA Y/O EMPAQUE/CAJA ORIGINAL</b></i></td></tr>
+	<tr><td><i>¡AGRADECEMOS SU PREFERENCIA!</b></i></td></tr>
 </table>
 
 </body>

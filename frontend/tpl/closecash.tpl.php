@@ -149,6 +149,8 @@ $terminal=GETPOST('terminal');
     	$sql .=" where pf.fk_control_cash = ".$id." and pf.fk_cash=".$terminal." and f.fk_mode_reglement=".$cash->fk_modepaycash. " and pf.fk_facture = f.rowid and f.fk_statut > 0";
     	$sql .=" AND pf.fk_facture NOT IN(SELECT fk_facture FROM ".MAIN_DB_PREFIX."pos_ticket WHERE fk_facture IS NOT NULL)";
     	dol_syslog('QUERY UNO: '.$sql);
+
+
     	$result=$db->query($sql);
 		
 		if ($result)
@@ -225,10 +227,54 @@ $terminal=GETPOST('terminal');
 
 	?>
 </table>
+<table class="totaux">
+    <?php
+    echo '<tr><th nowrap="nowrap">'.$langs->trans("TotalCard").'</th><td nowrap="nowrap">'.price($subtotalcard)." ".$langs->trans(currency_name($conf->currency))."</td></tr>\n";
+    ?>
+</table>
+<br><br>
+<p><?php print $langs->trans("TicketsPendingPay"); ?></p>
+<table class="liste_articles">
+    <tr class="titres"><th><?php print $langs->trans("apartado"); ?></th><th><?php print $langs->trans("Total"); ?></th></tr>
 
+    <?php
+
+    // Pending Pay
+    $sql = "select t.ticketnumber, ABS(t.difpayment)total_ttc, t.type from  ".MAIN_DB_PREFIX."pos_ticket as t
+              where t.fk_control = ".$id."
+            and t.fk_cash=".$terminal."  and t.fk_statut > 0 and t.paye = 0";
+
+    dol_syslog('QUERY DOS: '.$sql);
+
+    $result=$db->query($sql);
+    //echo $sql; die();
+    if ($result)
+    {
+        $num = $db->num_rows($result);
+        if($num>0)
+        {
+            $i = 0;
+            $subtotalPending=0;
+            while ($i < $num)
+            {
+                $objp = $db->fetch_object($result);
+                //if($objp->type > 0)$objp->total_ttc= $objp->total_ttc * -1;
+                echo ('<tr><td align="left">'.$objp->ticketnumber.'</td><td align="right">'.price($objp->total_ttc).'</td></tr>'."\n");
+                $i++;
+                $subtotalPending+=$objp->total_ttc;
+            }
+        }
+        else
+        {
+            echo ('<tr><td align="left">'.$langs->Trans("NoTickets").'</td></tr>'."\n");
+        }
+    }
+
+    ?>
+</table>
 <table class="totaux">
 	<?php
-		echo '<tr><th nowrap="nowrap">'.$langs->trans("TotalCard").'</th><td nowrap="nowrap">'.price($subtotalcard)." ".$langs->trans(currency_name($conf->currency))."</td></tr>\n";
+		echo '<tr><th nowrap="nowrap">'.$langs->trans("TotalPending").'</th><td nowrap="nowrap">'.price($subtotalPending)." ".$langs->trans(currency_name($conf->currency))."</td></tr>\n";
 	?>
 </table>
 <br><br>
@@ -240,7 +286,7 @@ $terminal=GETPOST('terminal');
 
 <script type="text/javascript">
 
-	window.print();
+	//window.print();
 
 </script>
 
