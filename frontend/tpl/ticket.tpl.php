@@ -74,7 +74,7 @@ $id=GETPOST('id');
 		margin-top: 16px;
 		width: 30%;
 		float: right;
-		font-size:10px;
+		font-size:12px;
 		text-align: right;
 	}
 
@@ -118,7 +118,8 @@ $id=GETPOST('id');
 			$userstatic=new User($db);
 			$userstatic->fetch($object->user_close);
 
-
+			$societe = new Societe($db);
+			$societe->fetch($object->socid);
 			?><br><br>
 			<?php if(!empty($object->fk_place))
 			{
@@ -258,7 +259,7 @@ $id=GETPOST('id');
 
 <script type="text/javascript">
 
-	window.print();
+	//window.print();
 
 </script>
 
@@ -275,15 +276,38 @@ echo '
 
 <a class="lien" href="#" onclick="javascript: window.close(); return(false);">Fermer cette fenetre</a>
 
+<?php
 
-<table id="fb-addr">
-	<tr><td><i>**NO SE REALIZAN DEVOLUCIONES EN EFECTIVO.</b></i></td></tr>
-	<tr><td><i>*LIMITE PARA HACER CAMBIOS 3 DÍAS.</b></i></td></tr>
-	<tr><td><i>INICIA EL PRIMER DÍA POSTERIOR A LA COMPRA</b></i></td></tr>
-	<tr><td><i>*MERCANCIA CON DESCUENTO O EN PROMOCIÓN NO TIENE CAMBIOS, NI DEVOLUCIONES</b></i></td></tr>
-	<tr><td><i>*NO SE REALIZAN CAMBIOS EXTEMPORANEOS O SIN TICKET DE COMPRA</b></i></td></tr>
-	<tr><td><i>*LA MERCANCIA DEBE PRESENTARSE CON SU ETIQUETA Y/O EMPAQUE/CAJA ORIGINAL</b></i></td></tr>
-	<tr><td><i>¡AGRADECEMOS SU PREFERENCIA!</b></i></td></tr>
-</table>
+if($difpayment>0){
+    ?>
+    <table id="fb-addr" class="">
+        <tr><td style="text-align: center;" colspan="2"><i>*****<?php echo $langs->trans("pagare")?>*****</b></i></td></tr>
+        <tr><td >TOTAL NOTA DE VENTA:</td><td style="text-align: right;"><i>$ <?php echo number_format($object->total_ttc,2)." ".$conf->global->MAIN_MONNAIE;?></b></i></td></tr>
+        <tr><td><i>ANTICIPO:</b></i></td><td  style="text-align: right;"><i>$ <?php echo number_format($object->customer_pay,2)." ".$conf->global->MAIN_MONNAIE; ?></b></i></td></tr>
+        <tr><td><i>TOTAL PAGARE:</b></i></td><td style="text-align: right;"><i>$ <?php echo number_format(abs($difpayment),2)." ".$conf->global->MAIN_MONNAIE;?></b></i></td></tr>
+        <tr><td style="text-align: center;" colspan="2"><i>*****<?php echo strtoupper($langs->trans("apartado"))?>*****</b></i></td></tr>
+        <tr><td style="text-align: center;" colspan="2"><i>*****<?php echo $langs->trans("sign")?>*****</b></i></td></tr>
+        <tr><td style="text-align: center;"colspan="2"><i><?php echo strtoupper($societe->name);?></b></i></td></tr>
+        <tr><td style="text-align: center;"colspan="2"><i>______________________________________________</b></i></td></tr>
+        <tr><td style="text-align: center;"colspan="2"><i>ACEPTO SALDAR LA CANTIDAD QUE AQUI SE SEÑALA EN EL TIEMPO CONVENIDO ACEPTO LAS POLITICAS DE CREDITO</b></i></td></tr>
+        <tr><td colspan="2"><i>*ARTICULOS APARTADOS NO SE CAMBIAN O SE CANCELAN, NO SE REGRESAN ANTICIPOS.</b></i></td></tr>
+        <tr><td colspan="2"><i>*30 DÍAS PARA LIQUIDAR SU APARTADO.</b></i></td></tr>
+        <tr><td colspan="2"><i>*APARTADO VENCIDO SE INGRESA A INVENTARIO SE PIERDE ANTICIPO.</b></i></td></tr>
+    </table>
+    <?php
+}else{
+    ?>
+    <table id="fb-addr" class="liste_articles">
+        <tr><td><i>**NO SE REALIZAN DEVOLUCIONES EN EFECTIVO.</b></i></td></tr>
+        <tr><td><i>*LIMITE PARA HACER CAMBIOS 3 DÍAS.</b></i></td></tr>
+        <tr><td><i>INICIA EL PRIMER DÍA POSTERIOR A LA COMPRA</b></i></td></tr>
+        <tr><td><i>*MERCANCIA CON DESCUENTO O EN PROMOCIÓN NO TIENE CAMBIOS, NI DEVOLUCIONES</b></i></td></tr>
+        <tr><td><i>*NO SE REALIZAN CAMBIOS EXTEMPORANEOS O SIN TICKET DE COMPRA</b></i></td></tr>
+        <tr><td><i>*LA MERCANCIA DEBE PRESENTARSE CON SU ETIQUETA Y/O EMPAQUE/CAJA ORIGINAL</b></i></td></tr>
+        <tr><td><i>¡AGRADECEMOS SU PREFERENCIA!</b></i></td></tr>
+    </table>
+    <?php
+}
+?>
 
 </body>
