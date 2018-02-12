@@ -109,10 +109,16 @@ report_header($nom,$nomlink,$period,$periodlink,$description,$builddate,$exportl
 // Load table
 $catotal=0;
 
-$sql = "SELECT s.rowid as socid, s.lastname, s.firstname, sum(f.total_ht) as amount, sum(f.total_ttc) as amount_ttc";//AMM 1 20140327 cambio u.name por u.lastname
-$sql.= " FROM ".MAIN_DB_PREFIX."user as s";
-$sql.= ", ".MAIN_DB_PREFIX."pos_ticket as f";
-$sql.= " WHERE f.fk_statut in (1,2,3,4)";
+$sql = "SELECT s.rowid as socid, s.lastname, s.firstname, s.porcent_sales, sum(f.total_ht) as amount, sum(f.total_ttc) as amount_ttc FROM (
+  SELECT U.*, IF(UGE.porcent_sales IS NULL ,0,UGE.porcent_sales)porcent_sales FROM ".MAIN_DB_PREFIX."user U
+    LEFT JOIN ".MAIN_DB_PREFIX."usergroup_user user2 ON U.rowid = user2.fk_user
+    LEFT JOIN ".MAIN_DB_PREFIX."usergroup_extrafields UGE ON UGE.fk_object = user2.fk_usergroup
+                                                                                                                 ) as s
+LEFT JOIN llx_pos_ticket as f ON f.fk_user_close = s.rowid WHERE f.fk_statut in (1,2,3,4)";
+//$sql = "SELECT s.rowid as socid, s.lastname, s.firstname, sum(f.total_ht) as amount, sum(f.total_ttc) as amount_ttc";//AMM 1 20140327 cambio u.name por u.lastname
+//$sql.= " FROM ".MAIN_DB_PREFIX."user as s";
+//$sql.= ", ".MAIN_DB_PREFIX."pos_ticket as f";
+//$sql.= " WHERE f.fk_statut in (1,2,3,4)";
 //$sql.= " AND (";
 //$sql.= " f.type = 0";          // Standard
 //$sql.= " OR f.type = 1";       // Credit note
@@ -136,6 +142,7 @@ if ($result)
 		$amount[$obj->socid] += $obj->amount_ttc;
 		$name[$obj->socid] = $obj->firstname.' '.$obj->lastname;//AMM 1 20140327 cambio u.name por u.lastname
 		$catotal+=$obj->amount_ttc;
+		$venta[$obj->socid] = $obj->porcent_sales * $obj->amount_ttc;
 		$i++;
 	}
 }
@@ -149,6 +156,7 @@ print "<tr class=\"liste_titre\">";
 print_liste_field_titre($langs->trans("User"),$_SERVER["PHP_SELF"],"lastname","",'&amp;year='.($year).'&modecompta='.$modecompta,"",$sortfield,$sortorder);//AMM 1 20140327 cambio u.name por u.lastname
 print_liste_field_titre($langs->trans("AmountTTC"),$_SERVER["PHP_SELF"],"amount_ttc","",'&amp;year='.($year).'&modecompta='.$modecompta,'align="right"',$sortfield,$sortorder);
 print_liste_field_titre($langs->trans("Percentage"),$_SERVER["PHP_SELF"],"amount_ttc","",'&amp;year='.($year).'&modecompta='.$modecompta,'align="right"',$sortfield,$sortorder);
+print_liste_field_titre($langs->trans("Percentage_sale"),$_SERVER["PHP_SELF"],"","",'&amp;year='.($year).'&modecompta='.$modecompta,'align="right"',$sortfield,$sortorder);
 print_liste_field_titre($langs->trans("OtherStatistics"),$_SERVER["PHP_SELF"],"","","",'align="center" width="20%"');
 print "</tr>\n";
 $var=true;
@@ -201,12 +209,13 @@ if (sizeof($amount))
 
 		// Percent;
 		print '<td align="right">'.($catotal > 0 ? round(100 * $amount[$key] / $catotal, 2).'%' : '&nbsp;').'</td>';
+		print '<td align="right">'.($catotal > 0 ? price($venta[$key]) : '&nbsp;').'</td>';
 
         // Other stats
         print '<td align="center">';
-        if ($conf->propal->enabled && $key>0) print '&nbsp;<a href="'.DOL_URL_ROOT.'/comm/propal/stats/index.php?userid='.$key.'">'.img_picto($langs->trans("ProposalStats"),"stats").'</a>&nbsp;';
-        if ($conf->commande->enabled && $key>0) print '&nbsp;<a href="'.DOL_URL_ROOT.'/commande/stats/index.php?userid='.$key.'">'.img_picto($langs->trans("OrderStats"),"stats").'</a>&nbsp;';
-        if ($conf->facture->enabled && $key>0) print '&nbsp;<a href="'.DOL_URL_ROOT.'/compta/facture/stats/index.php?userid='.$key.'">'.img_picto($langs->trans("InvoiceStats"),"stats").'</a>&nbsp;';
+        //if ($conf->propal->enabled && $key>0) print '&nbsp;<a href="'.DOL_URL_ROOT.'/comm/propal/stats/index.php?userid='.$key.'">'.img_picto($langs->trans("ProposalStats"),"stats").'</a>&nbsp;';
+        //if ($conf->commande->enabled && $key>0) print '&nbsp;<a href="'.DOL_URL_ROOT.'/commande/stats/index.php?userid='.$key.'">'.img_picto($langs->trans("OrderStats"),"stats").'</a>&nbsp;';
+        //if ($conf->facture->enabled && $key>0) print '&nbsp;<a href="'.DOL_URL_ROOT.'/compta/facture/stats/index.php?userid='.$key.'">'.img_picto($langs->trans("InvoiceStats"),"stats").'</a>&nbsp;';
         print '</td>';
 
 		print "</tr>\n";
