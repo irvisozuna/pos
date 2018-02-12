@@ -8,3 +8,4 @@ create table llx_pos_facture(rowid integer AUTO_INCREMENT PRIMARY KEY, fk_cash i
 ALTER TABLE llx_pos_facture ADD fk_control_cash INT NULL;
 ALTER TABLE llx_pos_facture ADD fk_place INT NULL;
 UPDATE TABLE llx_const set value = "mod_ticket_barx" WHERE name = "TICKET_ADDON"
+ALTER TABLE llx_pos_control_cash ADD amount_card DOUBLE(15,2) NULL AFTER amount_real;

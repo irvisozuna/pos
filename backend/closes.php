@@ -138,7 +138,7 @@ $listfield=explode(',',$sortfield);
 foreach ($listfield as $key => $value) $sql.= $listfield[$key].' '.$sortorder.',';
 $sql.= ' f.rowid DESC ';
 $sql.= $db->plimit($limit+1,$offset);
-        //print $sql;
+
 
 $resql = $db->query($sql);
 if ($resql)

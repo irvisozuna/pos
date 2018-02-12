@@ -199,6 +199,7 @@ TicketsCreditCard=Banco
 TotalCard=Ventas banco
 TotalCash=Ventas efectivo
 TotalPOS=Total ventas
+Totaldia=Total del día
 Date=Fecha
 Terminal=Terminal
 NotHasTerminal=No hay terminales abiertos.<br>Consulte con el administrador.

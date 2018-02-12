@@ -139,16 +139,23 @@ $terminal=GETPOST('terminal');
 	<?php
 
 		// Cash
-		
-		$sql = "select t.ticketnumber, t.total_ttc, t.type";
-    	$sql .=" from ".MAIN_DB_PREFIX."pos_ticket as t";
-    	$sql .=" where t.fk_control = ".$id." and t.fk_cash=".$terminal." and t.fk_mode_reglement=".$cash->fk_modepaycash." and t.fk_statut > 0";
-    	
-    	$sql .= " union select f.facnumber, f.total_ttc, f.type";
-    	$sql .=" from ".MAIN_DB_PREFIX."pos_facture as pf,".MAIN_DB_PREFIX."facture as f ";
-    	$sql .=" where pf.fk_control_cash = ".$id." and pf.fk_cash=".$terminal." and f.fk_mode_reglement=".$cash->fk_modepaycash. " and pf.fk_facture = f.rowid and f.fk_statut > 0";
-    	$sql .=" AND pf.fk_facture NOT IN(SELECT fk_facture FROM ".MAIN_DB_PREFIX."pos_ticket WHERE fk_facture IS NOT NULL)";
-    	dol_syslog('QUERY UNO: '.$sql);
+    if($conf->global->POS_SHOW_CASH){
+        $sql = "SELECT ticketnumber, P.amount as total_ttc FROM llx_pos_ticket T
+                  INNER JOIN llx_pos_paiement_ticket PT ON T.rowid = PT.fk_ticket
+                  INNER JOIN llx_paiement P ON PT.fk_paiement = P.rowid
+                  INNER JOIN llx_bank B ON P.fk_bank = B.rowid
+                WHERE fk_control = ".$id." AND B.fk_type = 'LIQ'";
+    }else {
+        $sql = "select t.ticketnumber, t.total_ttc, t.type";
+        $sql .= " from " . MAIN_DB_PREFIX . "pos_ticket as t";
+        $sql .= " where t.fk_control = " . $id . " and t.fk_cash=" . $terminal . " and t.fk_mode_reglement=" . $cash->fk_modepaycash . " and t.fk_statut > 0";
+
+        $sql .= " union select f.facnumber, f.total_ttc, f.type";
+        $sql .= " from " . MAIN_DB_PREFIX . "pos_facture as pf," . MAIN_DB_PREFIX . "facture as f ";
+        $sql .= " where pf.fk_control_cash = " . $id . " and pf.fk_cash=" . $terminal . " and f.fk_mode_reglement=" . $cash->fk_modepaycash . " and pf.fk_facture = f.rowid and f.fk_statut > 0";
+        $sql .= " AND pf.fk_facture NOT IN(SELECT fk_facture FROM " . MAIN_DB_PREFIX . "pos_ticket WHERE fk_facture IS NOT NULL)";
+        dol_syslog('QUERY UNO: ' . $sql);
+    }
 
 
     	$result=$db->query($sql);
@@ -192,14 +199,23 @@ $terminal=GETPOST('terminal');
 	<?php
 
 		// Credit card
-		$sql = "select t.ticketnumber, t.total_ttc, t.type";
-    	$sql .=" from ".MAIN_DB_PREFIX."pos_ticket as t";
-    	$sql .=" where t.fk_control = ".$id." and t.fk_cash=".$terminal." and t.fk_mode_reglement=".$cash->fk_modepaybank. " and t.fk_statut > 0";
-    	 
-    	$sql .= " union select f.facnumber, f.total_ttc, f.type";
-    	$sql .=" from ".MAIN_DB_PREFIX."pos_facture as pf,".MAIN_DB_PREFIX."facture as f ";
-    	$sql .=" where pf.fk_control_cash = ".$id." and pf.fk_cash=".$terminal." and f.fk_mode_reglement=".$cash->fk_modepaybank. " and pf.fk_facture = f.rowid and f.fk_statut > 0";
-    	$sql .=" AND pf.fk_facture NOT IN(SELECT fk_facture FROM ".MAIN_DB_PREFIX."pos_ticket WHERE fk_facture IS NOT NULL)";
+    if($conf->global->POS_SHOW_CASH){
+        $sql = "SELECT ticketnumber, P.amount as total_ttc FROM llx_pos_ticket T
+  INNER JOIN llx_pos_paiement_ticket PT ON T.rowid = PT.fk_ticket
+  INNER JOIN llx_paiement P ON PT.fk_paiement = P.rowid
+  INNER JOIN llx_bank B ON P.fk_bank = B.rowid
+WHERE fk_control = ".$id." AND B.fk_type = 'CB'";
+    }else{
+        $sql = "select t.ticketnumber, t.total_ttc, t.type";
+        $sql .=" from ".MAIN_DB_PREFIX."pos_ticket as t";
+        $sql .=" where t.fk_control = ".$id." and t.fk_cash=".$terminal." and t.fk_mode_reglement=".$cash->fk_modepaybank. " and t.fk_statut > 0";
+
+        $sql .= " union select f.facnumber, f.total_ttc, f.type";
+        $sql .=" from ".MAIN_DB_PREFIX."pos_facture as pf,".MAIN_DB_PREFIX."facture as f ";
+        $sql .=" where pf.fk_control_cash = ".$id." and pf.fk_cash=".$terminal." and f.fk_mode_reglement=".$cash->fk_modepaybank. " and pf.fk_facture = f.rowid and f.fk_statut > 0";
+        $sql .=" AND pf.fk_facture NOT IN(SELECT fk_facture FROM ".MAIN_DB_PREFIX."pos_ticket WHERE fk_facture IS NOT NULL)";
+    }
+
     	dol_syslog('QUERY DOS: '.$sql);
     	$result=$db->query($sql);
 		
@@ -280,7 +296,8 @@ $terminal=GETPOST('terminal');
 <br><br>
 <table class="totaux">
 	<?php
-		echo '<tr><th nowrap="nowrap">'.$langs->trans("TotalPOS").'</th><td nowrap="nowrap">'.price($subtotalcard+$subtotalcash)." ".$langs->trans(currency_name($conf->currency))."</td></tr>\n";
+		echo '<tr><th nowrap="nowrap">'.$langs->trans("Totaldia").'</th><td nowrap="nowrap">'.price($subtotalcard+$subtotalcash)." ".$langs->trans(currency_name($conf->currency))."</td></tr>\n";
+		echo '<tr><th nowrap="nowrap">'.$langs->trans("TotalPOS").'</th><td nowrap="nowrap">'.price($subtotalcard+$subtotalcash+$subtotalPending)." ".$langs->trans(currency_name($conf->currency))."</td></tr>\n";
 	?>
 </table>
 

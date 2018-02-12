@@ -4357,6 +4357,7 @@ dol_syslog('ESTE BANKID::'.$bankaccountid);
 			$data['userid'] 		= $aryClose['employeeId'];
 			$data['amount_reel'] 	= $aryClose['moneyincash'];
 			$data['amount_teoric'] 	= $cash->getMoneyCash();
+			$data['amount_card']    = $cash->getMoneyCard();
 			$data['amount_diff'] 	= $data['amount_reel'] - $data['amount_teoric'];
 			$data['type_control'] 	= $aryClose['type'];
 			$data['print']			= $aryClose['print'];

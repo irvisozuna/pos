@@ -877,6 +877,7 @@ class ControlCash extends CommonObject
         $sql.= ", fk_user";
         $sql.= ", amount_real";
         $sql.= ", amount_teor";
+        $sql.= ", amount_card";
         $sql.= ", amount_diff";
         $sql.= ", type_control";
         $sql.= ", date_c";
@@ -887,6 +888,7 @@ class ControlCash extends CommonObject
         $sql.= ", ".$data['userid'];
 		$sql.= ", ".$data['amount_reel'];
 		$sql.= ", ".$data['amount_teoric'];
+		$sql.= ", ".$data['amount_card'] ;
 		$sql.= ", ".$data['amount_diff'];
 		$sql.= ", ".$data['type_control'];
 		$sql.= ", ".$db->idate($now);
@@ -975,23 +977,23 @@ class ControlCash extends CommonObject
         
     	return $date_close;  	
     }
-    
+
 	/**
-	 * 
+	 *
 	 * Return the money in cash
-	 * 
+	 *
 	 * @param		bool		$open	money for open or not
 	 * @return		double		Amount of cash since last closed
 	 */
 	function getMoneyCash($open=false)
 	{
 		global $db,$conf,$langs;
-		
+
 		$cash = new Cash($db);
         $cash->fetch($this->terminal);
-        
+
         $acount=$cash->fk_paycash;
-		
+
 		/*$sql="SELECT sum( b.amount ) as amount";
 		$sql .=" FROM llx_bank_account AS ba, llx_bank AS b";
 		$sql .=" WHERE b.fk_account =".$acount;
@@ -1013,14 +1015,11 @@ class ControlCash extends CommonObject
 		     )amount   
            "; */
         if($conf->global->POS_SHOW_CASH){
-            $sql = "SELECT (
-		    (IFNULL((SELECT sum(customer_pay) total_ttc FROM llx_pos_ticket c WHERE fk_control is null
-		                 AND c.fk_cash='3' AND c.entity='1' AND type='0'
-		         ),0))
-  +(IFNULL((SELECT sum(IF(difpayment<0, difpayment, 0)) total_ttc FROM llx_pos_ticket c WHERE fk_control is null
-		                 AND c.fk_cash='3' AND c.entity='1' AND type='0'
-		         ),0))
-		     )amount";
+            $sql = "SELECT SUM(B.amount)amount FROM llx_pos_paiement_ticket as PPT
+  INNER JOIN llx_paiement P ON PPT.fk_paiement = P.rowid
+  INNER JOIN llx_bank B ON P.fk_bank = B.rowid
+AND fk_ticket IN (SELECT rowid FROM llx_pos_ticket WHERE fk_control IS NULL AND fk_cash = '".$_SESSION['TERMINAL_ID']."')
+  AND B.fk_type = 'LIQ'";
         }else{
             $sql="
           SELECT (
@@ -1046,15 +1045,61 @@ class ControlCash extends CommonObject
             if ($db->num_rows($result))
             {
                 $obj = $db->fetch_object($result);
-				
+
                 $amount = $obj->amount;
             }
         }
-        
+
         if (!$amount) $amount=0;
     	return $amount;
-		
+
 	}
+    /**
+     *
+     * Return the money in Card
+     *
+     * @param		bool		$open	money for open or not
+     * @return		double		Amount of cash since last closed
+     */
+    function getMoneyCard($control = false)
+    {
+        global $db,$conf,$langs;
+
+        $cash = new Cash($db);
+        $cash->fetch($this->terminal);
+
+        if(!$control){
+        $sql = "SELECT SUM(B.amount)amount FROM llx_pos_paiement_ticket as PPT
+              INNER JOIN llx_paiement P ON PPT.fk_paiement = P.rowid
+              INNER JOIN llx_bank B ON P.fk_bank = B.rowid
+            AND fk_ticket IN (SELECT rowid FROM llx_pos_ticket WHERE fk_control IS NULL AND fk_cash = '".$_SESSION['TERMINAL_ID']."' )
+              AND B.fk_type = 'CB'";
+        }else{
+            $sql = "SELECT SUM(B.amount)amount FROM llx_pos_paiement_ticket as PPT
+              INNER JOIN llx_paiement P ON PPT.fk_paiement = P.rowid
+              INNER JOIN llx_bank B ON P.fk_bank = B.rowid
+            AND fk_ticket IN (SELECT rowid FROM llx_pos_ticket WHERE fk_control = $control AND fk_cash = '".$_SESSION['TERMINAL_ID']."' )
+              AND B.fk_type = 'CB'";
+        }
+
+
+
+        dol_syslog('ESTE QUERY OBTIENE TOTAL CAJA: '.$sql);
+        $result=$db->query($sql);
+        if ($result)
+        {
+            if ($db->num_rows($result))
+            {
+                $obj = $db->fetch_object($result);
+
+                $amount = $obj->amount;
+            }
+        }
+
+        if (!$amount) $amount=0;
+        return $amount;
+
+    }
 	
 	function setTicketClosedbyCash($closeid,$date_close)
 	{
