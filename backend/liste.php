@@ -173,7 +173,7 @@ else {
 	if ($page == -1) $page = 0 ;
 	
 	$sql = 'SELECT ';
-	$sql.= ' f.rowid as ticketid, f.type, f.ticketnumber, f.total_ht, f.total_ttc,';
+	$sql.= ' f.rowid as ticketid, f.type, f.ticketnumber, f.total_ht, f.total_ttc, f.remise_percent,';
 	$sql.= ' f.date_creation as df, f.fk_user_close,';
 	$sql.= ' f.paye as paye, f.fk_statut, f.customer_pay, f.difpayment, ';
 	$sql.= ' s.nom, s.rowid as socid,';	
@@ -306,6 +306,7 @@ else {
 		print_liste_field_titre($langs->trans('AmountTTC'),$_SERVER['PHP_SELF'],'f.total_ttc','',$param,'align="right"',$sortfield,$sortorder);
 		print_liste_field_titre($langs->trans('Received'),$_SERVER['PHP_SELF'],'am','',$param,'align="right"',$sortfield,$sortorder);
 		print_liste_field_titre($langs->trans('AmountDiff'),$_SERVER['PHP_SELF'],'f.difpayment','',$param,'align="right"',$sortfield,$sortorder);
+		print_liste_field_titre($langs->trans('percent'),$_SERVER['PHP_SELF'],'f.remise_percent','',$param,'align="right"',$sortfield,$sortorder);
 		print_liste_field_titre($langs->trans('Status'),$_SERVER['PHP_SELF'],'fk_statut,paye,am','',$param,'align="right"',$sortfield,$sortorder);
 	    print '<td class="liste_titre">&nbsp;</td>';
 		print '</tr>';
@@ -428,7 +429,8 @@ else {
 				print '<td align="right">'.price($objttc).'</td>';
 				print '<td align="right">'.price($objcustpay).'</td>';
 				print '<td align="right">'.price($objdifpay).'</td>';
-				
+				print '<td align="right">'.$objp->remise_percent.'</td>';
+
 				// Affiche statut de la ticket
 				print '<td align="left" nowrap="nowrap">';
 				print $ticketstatic->LibStatut($objp->fk_statut,1);

@@ -135,6 +135,7 @@ TicketsPendingPay=Pendientes de pago por apartado
 apartado= Apartado
 pagare= PAGARE
 sign= FIRMA
+percent=Descuento
 
 #Docs
 Facture=Factura
