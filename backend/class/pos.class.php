@@ -1179,16 +1179,16 @@ class POS extends CommonObject
 	public static function select_Users($selected='',$htmlname='users')
 	{
 		global $db,$conf;
-		
-		$sql = "SELECT rowid, lastname, firstname, email";//AMM 1 20140327 cambio u.name por u.lastname
+
+		$sql = "SELECT U.rowid, lastname, firstname, email";//AMM 1 20140327 cambio u.name por u.lastname
 		if(DOL_VERSION>='3.8'){
 			$sql.=" ,fk_soc as fk_societe";
 		}else{
 			$sql.=" ,fk_societe";
 		}
-		$sql.= " FROM ".MAIN_DB_PREFIX."user";
-		$sql.= " WHERE entity IN (0,".$conf->entity.")";
-	
+		$sql.= " FROM ".MAIN_DB_PREFIX."user U INNER JOIN ".MAIN_DB_PREFIX."pos_cashgroup_cash PC ON U.rowid = PC.fk_user";
+		$sql.= " WHERE U.entity IN (0,".$conf->entity.") GROUP BY U.rowid";
+
 		$resql=$db->query($sql);
 		if ($resql)
 		{
