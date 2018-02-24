@@ -35,7 +35,8 @@ $usertpv->getrights();
 	<script type="text/javascript" src="js/layout.js"></script>
  	<script type="text/javascript" src="js/jquery.keyboard.min.js"></script>
  	<script type="text/javascript" src="js/jquery.printPage.js"></script>
- 	
+ 	<script type="text/javascript" src="js/shortcut.js"></script>
+
 	
 
 </head>
@@ -1354,6 +1355,12 @@ $usertpv->getrights();
   					return false;
 					});
                 </script>
-  
+        <script>
+            $(function(){
+                shortcut.add("f1",function() {
+                    $('#idEmployee').dialog({width:400});
+                });
+            });
+        </script>
 </body>
 </html>

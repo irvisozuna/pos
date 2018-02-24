@@ -1187,7 +1187,7 @@ class POS extends CommonObject
 			$sql.=" ,fk_societe";
 		}
 		$sql.= " FROM ".MAIN_DB_PREFIX."user U INNER JOIN ".MAIN_DB_PREFIX."pos_cashgroup_cash PC ON U.rowid = PC.fk_user";
-		$sql.= " WHERE U.entity IN (0,".$conf->entity.") GROUP BY U.rowid";
+		$sql.= " WHERE U.entity IN (0,".$conf->entity.") AND fk_cashgroup = ".$_SESSION['TERMINAL_ID']." GROUP BY U.rowid";
 
 		$resql=$db->query($sql);
 		if ($resql)
@@ -3012,6 +3012,35 @@ FROM ".MAIN_DB_PREFIX."pos_terminal_mpagos WHERE fk_terminal=".$cash->id."))";
 				/*$term = new Cash($db);
 				$term->fetch($record['rowid']);
 				$terms[$record['id']] = $term;*/
+			}
+			return $terms;
+		}
+		else
+		{
+			return -1;
+		}
+    }/**
+     *
+     * Returns terminals of POS
+     */
+	public static function select_Terminals_all()
+    {
+    	global $db, $conf;
+
+    	$sql = "SELECT rowid, name";
+		$sql.= " FROM ".MAIN_DB_PREFIX."pos_cash";
+		$sql.= " WHERE entity = ".$conf->entity;
+		$sql.= " ";
+
+   		$res = $db->query ($sql);
+
+		if ($res)
+		{
+			//require_once(DOL_DOCUMENT_ROOT ."/pos/backend/class/cash.class.php");
+			$terms = array ();
+			while ($record = $db->fetch_array ($res))
+			{
+				$terms[$record["rowid"]] = $record["name"];
 			}
 			return $terms;
 		}

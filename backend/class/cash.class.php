@@ -1039,6 +1039,7 @@ AND fk_ticket IN (SELECT rowid FROM llx_pos_ticket WHERE fk_control IS NULL AND 
 
 
 		dol_syslog('ESTE QUERY CIERRA: '.$sql);
+
 		$result=$db->query($sql);
         if ($result)
         {
@@ -1103,6 +1104,7 @@ AND fk_ticket IN (SELECT rowid FROM llx_pos_ticket WHERE fk_control IS NULL AND 
 	
 	function setTicketClosedbyCash($closeid,$date_close)
 	{
+
 		global $db;
 		
 		$sql = "update ".MAIN_DB_PREFIX."pos_ticket ";
@@ -1110,7 +1112,7 @@ AND fk_ticket IN (SELECT rowid FROM llx_pos_ticket WHERE fk_control IS NULL AND 
 		$sql.=" fk_control=".$closeid;
 		$sql.=" where date_closed>'".$date_close."'";
 		$sql.=" and fk_cash=".$this->terminal;
-		
+
 		$db->query($sql);
 				
 	}

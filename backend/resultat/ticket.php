@@ -32,6 +32,7 @@ dol_include_once('/pos/backend/class/cash.class.php');
 require_once(DOL_DOCUMENT_ROOT."/core/lib/report.lib.php");
 require_once(DOL_DOCUMENT_ROOT ."/core/lib/date.lib.php");
 dol_include_once('/pos/backend/class/pos.class.php');
+dol_include_once('/pos/backend/resultat/report_header.php');
 
 $langs->load('pos@pos');
 $langs->load('deliveries');
@@ -79,6 +80,7 @@ $html=new Form($db);
 // Date range
 $year=GETPOST("year");
 $month=GETPOST("month");
+$terminal=GETPOST("terminal");
 if (empty($year))
 {
 	$year_current = strftime("%Y",dol_now());
@@ -125,7 +127,10 @@ $nom=$langs->trans("Tickets");
 $builddate=time();
 $description=$langs->trans("RulesResult");
 $period=$html->select_date($date_start,'date_start',0,0,0,'',1,0,1).' - '.$html->select_date($date_end,'date_end',0,0,0,'',1,0,1);
-report_header($nom,$nomlink,$period,$periodlink,$description,$builddate,$exportlink);
+$terminals=POS::select_Terminals_all();
+$terminals[0] = "Todas";
+$searchform=$form->selectArray('terminal',$terminals,$terminal);
+report_header_mod($nom,$nomlink,$period,$periodlink,$description,$builddate,$exportlink,[$searchform]);
 
 $p = explode(":", $conf->global->MAIN_INFO_SOCIETE_PAYS);
 $idpays = $p[0];
@@ -155,6 +160,10 @@ else {
 	$sql.= ', '.MAIN_DB_PREFIX.'user as u';
 	$sql.= ' WHERE f.fk_soc = s.rowid';
 	$sql.= " AND f.entity = ".$conf->entity;
+	if($terminal){
+        $sql.= " AND t.rowid = ".$terminal;
+    }
+
 	$sql.= " AND f.fk_cash = t.rowid";
 	if ($date_start && $date_end) $sql .= " AND f.date_closed >= '".$db->idate($date_start)."' AND f.date_closed <= '".$db->idate($date_end)."'";
 	//$sql.= " AND f.fk_user_close = u.rowid";

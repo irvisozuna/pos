@@ -774,6 +774,10 @@ var Ticket = jQuery.Class({
 							_TPV.mailFacture(result);
 						_TPV.ticket.newTicket();
 					});
+
+					//LO AGREGO PARA QUE IMPRIMA AUTOMATICAMENTE
+                    _TPV.printing('ticket',result);
+                    _TPV.ticket.newTicket();
 				}
 				else{
 					_TPV.ticket.newTicket();
@@ -1311,6 +1315,9 @@ var TPV = jQuery.Class({
 		$('#btnOkTicket').click(function(){
                         devolucion=0;
 			_TPV.ticket.okTicket();
+            $('#id_btn_ticketPay').unbind('click');
+            _TPV.ticket.mode=0;
+            showLeftContent('#payType');
 		});
 		$('#btnHistory').click(function(){
 			_TPV.getHistory();
