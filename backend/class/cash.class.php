@@ -1110,8 +1110,9 @@ AND fk_ticket IN (SELECT rowid FROM llx_pos_ticket WHERE fk_control IS NULL AND 
 		$sql = "update ".MAIN_DB_PREFIX."pos_ticket ";
 		$sql.=" set fk_statut= 2,";
 		$sql.=" fk_control=".$closeid;
-		$sql.=" where date_closed>'".$date_close."'";
-		$sql.=" and fk_cash=".$this->terminal;
+/*		$sql.=" where date_closed>'".$date_close."'";
+		$sql.=" and fk_cash=".$this->terminal;*/
+		$sql.=" where fk_cash=".$this->terminal;
 
 		$db->query($sql);
 				
