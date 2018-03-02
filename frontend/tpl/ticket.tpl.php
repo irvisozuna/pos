@@ -157,7 +157,7 @@ $id=GETPOST('id');
 		<?php print 'Teléfono '.$conf->global->TICK_TEL_SHOP; ?><br />
 		<?php print 'R.F.C. '.$conf->global->MAIN_INFO_SIREN; ?><br /><br />
 		
-		<i><?php print $langs->trans("Vendor").': '.$userstatic->firstname." ".$userstatic->lastname; ?></i><br />
+		<i style="font-size: 15px;"><?php print $langs->trans("Vendor").': '.$userstatic->firstname." ".$userstatic->lastname; ?></i><br />
 
 		<p>
 		
@@ -287,7 +287,7 @@ if($difpayment>0){
         <tr><td><i>TOTAL PAGARE:</b></i></td><td style="text-align: right;"><i>$ <?php echo number_format(abs($difpayment),2)." ".$conf->global->MAIN_MONNAIE;?></b></i></td></tr>
         <tr><td style="text-align: center;" colspan="2"><i>*****<?php echo strtoupper($langs->trans("apartado"))?>*****</b></i></td></tr>
         <tr><td style="text-align: center;" colspan="2"><i>*****<?php echo $langs->trans("sign")?>*****</b></i></td></tr>
-        <tr><td style="text-align: center;"colspan="2"><i><?php echo strtoupper($societe->name);?></b></i></td></tr>
+        <tr><td style="text-align: center; font-size: 15px;" colspan="2"><i><?php echo strtoupper($societe->name);?></b></i></td></tr>
         <tr><td style="text-align: center;"colspan="2"><i>______________________________________________</b></i></td></tr>
         <tr><td style="text-align: center;"colspan="2"><i>ACEPTO SALDAR LA CANTIDAD QUE AQUI SE SEÑALA EN EL TIEMPO CONVENIDO ACEPTO LAS POLITICAS DE CREDITO</b></i></td></tr>
         <tr><td colspan="2"><i>*ARTICULOS APARTADOS NO SE CAMBIAN O SE CANCELAN, NO SE REGRESAN ANTICIPOS.</b></i></td></tr>

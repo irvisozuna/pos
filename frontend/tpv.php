@@ -241,7 +241,7 @@ $usertpv->getrights();
 					}
 					?>
 					<li><label><?php echo $langs->trans("Price"); ?>:</label>
-					<input onclick="this.select()" type="text" size="6" name="line_price" id="line_price" value="0"  class="numKeyboard"></li>
+					<input onclick="this.select()" type="text" size="6" name="line_price" id="line_price" value="0"  class="numKeyboard" disabled></li>
 					<br clear="all" />
 					<li><label><?php echo $langs->trans("Note"); ?>:</label>
 					<input onclick="this.select()" type="text" size="6" name="line_note" id="line_note" value=""  class="quertyKeyboard"></li>
