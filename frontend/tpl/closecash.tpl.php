@@ -140,7 +140,7 @@ $terminal=GETPOST('terminal');
 
 		// Cash
     if($conf->global->POS_SHOW_CASH){
-        $sql = "SELECT ticketnumber, P.amount as total_ttc FROM llx_pos_ticket T
+        $sql = "SELECT ticketnumber, P.amount as total_ttc, P.note FROM llx_pos_ticket T
                   INNER JOIN llx_pos_paiement_ticket PT ON T.rowid = PT.fk_ticket
                   INNER JOIN llx_paiement P ON PT.fk_paiement = P.rowid
                   INNER JOIN llx_bank B ON P.fk_bank = B.rowid
@@ -171,7 +171,7 @@ $terminal=GETPOST('terminal');
 	            {
 	            	$objp = $db->fetch_object($result);
 	            	//if($objp->type ==2){$objp->total_ttc= $objp->total_ttc * -1;}
-	            	echo ('<tr><td align="left">'.$objp->ticketnumber.'</td><td align="right">'.price($objp->total_ttc).'</td></tr>'."\n");
+	            	echo ('<tr><td align="left">'.$objp->ticketnumber.' '.$objp->note.'</td><td align="right">'.price($objp->total_ttc).'</td></tr>'."\n");
 	            	$i++;
 	            	$subtotalcash+=$objp->total_ttc;
 	            }
@@ -278,6 +278,47 @@ WHERE fk_control = ".$id." AND B.fk_type = 'CB'";
                 echo ('<tr><td align="left">'.$objp->ticketnumber.'</td><td align="right">'.price($objp->total_ttc).'</td></tr>'."\n");
                 $i++;
                 $subtotalPending+=$objp->total_ttc;
+            }
+        }
+        else
+        {
+            echo ('<tr><td align="left">'.$langs->Trans("NoTickets").'</td></tr>'."\n");
+        }
+    }
+
+    ?>
+</table>
+<br><br>
+<p><?php print $langs->trans("TicketsPayApartado"); ?></p>
+<table class="liste_articles">
+    <tr class="titres"><th><?php print $langs->trans("TicketsPayApartado"); ?></th><th><?php print $langs->trans("Total"); ?></th></tr>
+
+    <?php
+
+    $sql = "SELECT t.ticketnumber, sum(ppt.amount)amount, P.note  FROM llx_pos_paiement_ticket as PPT
+ INNER JOIN llx_pos_ticket as t ON t.rowid = PPT.fk_ticket
+  INNER JOIN llx_paiement P ON PPT.fk_paiement = P.rowid
+  INNER JOIN llx_bank B ON P.fk_bank = B.rowid
+  AND B.fk_type = 'LIQ' WHERE DATE_FORMAT(P.datec, '%Y-%m-%d') = DATE_FORMAT('".$date."', '%Y-%m-%d') AND P.note LIKE '% PAGO POR APARTADO%'";
+
+    dol_syslog('QUERY DOS: '.$sql);
+
+    $result=$db->query($sql);
+
+    if ($result)
+    {
+        $num = $db->num_rows($result);
+        if($num>0)
+        {
+            $i = 0;
+            $subtotalPending=0;
+            while ($i < $num)
+            {
+                $objp = $db->fetch_object($result);
+                //if($objp->type > 0)$objp->total_ttc= $objp->total_ttc * -1;
+                echo ('<tr><td align="left">'.$objp->ticketnumber.' '.$objp->note.'</td><td align="right">'.price($objp->amount).'</td></tr>'."\n");
+                $i++;
+                $subtotalPending+=$objp->amount;
             }
         }
         else

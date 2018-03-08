@@ -155,7 +155,7 @@ if ($action == 'confirm_paiement' && $confirm == 'yes')
     $paiement->amounts      = $amounts;   // Array with all payments dispatching
     $paiement->paiementid   = dol_getIdFromCode($db,$_POST['paiementcode'],'c_paiement');
     $paiement->num_paiement = $_POST['num_paiement'];
-    $paiement->note         = $_POST['comment'];
+    $paiement->note         = $_POST['comment']." PAGO POR APARTADO";
     $paiement->ref          = $ticket->ref_int;
 
     if (! $error)
