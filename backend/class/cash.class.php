@@ -1029,7 +1029,7 @@ AND fk_ticket IN (SELECT rowid FROM llx_pos_ticket WHERE fk_control IS NULL AND 
   INNER JOIN llx_paiement P ON PPT.fk_paiement = P.rowid
   INNER JOIN llx_bank B ON P.fk_bank = B.rowid
   AND B.fk_type = 'LIQ' WHERE DATE_FORMAT(P.datec, '%Y-%m-%d') = DATE_FORMAT('".$hoy."', '%Y-%m-%d') AND P.note LIKE '% PAGO POR APARTADO%'";
-            $sql = "SELECT (SUM(B.amount)+SUM(t1.amount))amount FROM llx_pos_paiement_ticket as PPT
+            $sql = "SELECT (SUM(B.amount)+t1.amount)amount FROM llx_pos_paiement_ticket as PPT
   INNER JOIN llx_paiement P ON PPT.fk_paiement = P.rowid
   INNER JOIN llx_bank B ON P.fk_bank = B.rowid
 AND fk_ticket IN (SELECT rowid FROM llx_pos_ticket WHERE fk_control IS NULL AND fk_cash = '".$_SESSION['TERMINAL_ID']."')
