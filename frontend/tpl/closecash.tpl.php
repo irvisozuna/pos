@@ -295,7 +295,7 @@ WHERE fk_control = ".$id." AND B.fk_type = 'CB'";
 
     <?php
 
-    $sql = "SELECT t.ticketnumber, sum(ppt.amount)amount, P.note  FROM llx_pos_paiement_ticket as PPT
+    $sql = "SELECT t.ticketnumber, sum(PPT.amount)amount, P.note  FROM llx_pos_paiement_ticket as PPT
  INNER JOIN llx_pos_ticket as t ON t.rowid = PPT.fk_ticket
   INNER JOIN llx_paiement P ON PPT.fk_paiement = P.rowid
   INNER JOIN llx_bank B ON P.fk_bank = B.rowid
