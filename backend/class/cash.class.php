@@ -1029,11 +1029,11 @@ AND fk_ticket IN (SELECT rowid FROM llx_pos_ticket WHERE fk_control IS NULL AND 
   INNER JOIN llx_paiement P ON PPT.fk_paiement = P.rowid
   INNER JOIN llx_bank B ON P.fk_bank = B.rowid
   AND B.fk_type = 'LIQ' WHERE DATE_FORMAT(P.datec, '%Y-%m-%d') = DATE_FORMAT('".$hoy."', '%Y-%m-%d') AND P.note LIKE '% PAGO POR APARTADO%'";
-            $sql = "SELECT (SUM(B.amount)+t1.amount)amount FROM llx_pos_paiement_ticket as PPT
+            $sql = "SELECT t1.amount total, t2.amount FROM (SELECT SUM(B.amount)amount FROM llx_pos_paiement_ticket as PPT
   INNER JOIN llx_paiement P ON PPT.fk_paiement = P.rowid
   INNER JOIN llx_bank B ON P.fk_bank = B.rowid
 AND fk_ticket IN (SELECT rowid FROM llx_pos_ticket WHERE fk_control IS NULL AND fk_cash = '".$_SESSION['TERMINAL_ID']."')
-  AND B.fk_type = 'LIQ',(SELECT SUM(B.amount)amount FROM llx_pos_paiement_ticket as PPT
+  AND B.fk_type = 'LIQ')t2,(SELECT SUM(B.amount)amount FROM llx_pos_paiement_ticket as PPT
   INNER JOIN llx_paiement P ON PPT.fk_paiement = P.rowid
   INNER JOIN llx_bank B ON P.fk_bank = B.rowid
   AND B.fk_type = 'LIQ' WHERE DATE_FORMAT(P.datec, '%Y-%m-%d') = DATE_FORMAT('".$hoy."', '%Y-%m-%d') AND P.note LIKE '% PAGO POR APARTADO%')t1";
@@ -1055,7 +1055,6 @@ AND fk_ticket IN (SELECT rowid FROM llx_pos_ticket WHERE fk_control IS NULL AND 
            ";
         }
 
-
 		dol_syslog('ESTE QUERY CIERRA: '.$sql);
 
 		$result=$db->query($sql);
@@ -1064,8 +1063,11 @@ AND fk_ticket IN (SELECT rowid FROM llx_pos_ticket WHERE fk_control IS NULL AND 
             if ($db->num_rows($result))
             {
                 $obj = $db->fetch_object($result);
-
-                $amount = $obj->amount;
+                $total = 0;
+                if(isset($obj->total) && !is_null($obj->total)){
+                    $total = $obj->total;
+                }
+                $amount = $obj->amount + $total;
             }
         }
 

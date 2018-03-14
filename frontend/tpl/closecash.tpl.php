@@ -311,14 +311,14 @@ WHERE fk_control = ".$id." AND B.fk_type = 'CB'";
         if($num>0)
         {
             $i = 0;
-            $subtotalPending=0;
+            $subtotaldesapartado=0;
             while ($i < $num)
             {
                 $objp = $db->fetch_object($result);
                 //if($objp->type > 0)$objp->total_ttc= $objp->total_ttc * -1;
                 echo ('<tr><td align="left">'.$objp->ticketnumber.' '.$objp->note.'</td><td align="right">'.price($objp->amount).'</td></tr>'."\n");
                 $i++;
-                $subtotalPending+=$objp->amount;
+                $subtotaldesapartado+=$objp->amount;
             }
         }
         else
@@ -331,13 +331,13 @@ WHERE fk_control = ".$id." AND B.fk_type = 'CB'";
 </table>
 <table class="totaux">
 	<?php
-		echo '<tr><th nowrap="nowrap">'.$langs->trans("TotalPending").'</th><td nowrap="nowrap">'.price($subtotalPending)." ".$langs->trans(currency_name($conf->currency))."</td></tr>\n";
+		echo '<tr><th nowrap="nowrap">'.$langs->trans("TotalDesapartado").'</th><td nowrap="nowrap">'.price($subtotaldesapartado)." ".$langs->trans(currency_name($conf->currency))."</td></tr>\n";
 	?>
 </table>
 <br><br>
 <table class="totaux">
 	<?php
-		echo '<tr><th nowrap="nowrap">'.$langs->trans("Totaldia").'</th><td nowrap="nowrap">'.price($subtotalcard+$subtotalcash)." ".$langs->trans(currency_name($conf->currency))."</td></tr>\n";
+		echo '<tr><th nowrap="nowrap">'.$langs->trans("Totaldia").'</th><td nowrap="nowrap">'.price($subtotalcard+$subtotalcash+$subtotaldesapartado)." ".$langs->trans(currency_name($conf->currency))."</td></tr>\n";
 		echo '<tr><th nowrap="nowrap">'.$langs->trans("TotalPOS").'</th><td nowrap="nowrap">'.price($subtotalcard+$subtotalcash+$subtotalPending)." ".$langs->trans(currency_name($conf->currency))."</td></tr>\n";
 	?>
 </table>
