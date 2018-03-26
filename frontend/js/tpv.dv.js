@@ -1609,8 +1609,9 @@ var TPV = jQuery.Class({
 	        	    	if(line['discount']!=0)
 	        	    		discount = 1-line['discount']/100;
 	        	    	//line['price_ttx']  = line['price_ttx']*(1+discount);
+						alert('sd');
 	        	    	total_dis= total_dis + parseFloat(line['remise']) * ((parseFloat(line['tva_tx']) + parseFloat(line['localtax1_tx']) + parseFloat(line['localtax2_tx']))/100+1)
-	        	    	var tr = '<tr id="ticketLine'+line['idProduct']+'"><td class="idCol" >'+line['idProduct']+'</td><td class="description">'+line['label']+'</td><td class="discount">'+line['discount']+'%</td><td class="price">'+displayPrice(line['total_ttc']/line['cant'])+'</td><td class="cant">'+line['cant']+'</td><td class="total">'+displayPrice(line['total_ttc'])+'</td>';
+	        	    	var tr = '<tr id="ticketLine'+line['idProduct']+'" ><td class="idCol" >'+line['idProduct']+'</td><td class="description">'+line['label']+'</td><td class="discount">'+line['discount']+'%</td><td class="price">'+displayPrice(line['total_ttc']/line['cant'])+'</td><td class="cant">'+line['cant']+'</td><td class="total">'+displayPrice(line['total_ttc'])+'</td>';
 	        	    	tr = tr + '</tr>';
 	        	    		        	    	
 	        	    	$('#tablaTicket > tbody:last').prepend(tr);

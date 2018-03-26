@@ -297,6 +297,12 @@ elseif($action == "validaDevol"){
     $result = POS::validaCantidadTicket($data["data"]);
     echo json_encode($result);
 }
+
+//ESTA OPCION ES POR QUE NO SIRVE LA DEVOLUCIONES
+elseif($action == "returnProducts"){
+    $result = POS::devolverProduct($data["data"]);
+    echo json_encode($result);
+}
 echo $html;
 
 

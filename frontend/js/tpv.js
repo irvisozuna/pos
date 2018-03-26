@@ -1088,6 +1088,7 @@ var TicketLine = jQuery.Class({
 			this.total_ttc = product.price_ttc;
 	        this.total_ttc_without_discount = product.price_ttc;
 		}
+		this.discount = 0; //probando
 		this.idProduct = idProduct;
 		this.ref = 0;
 		this.label = product.label;
@@ -1331,7 +1332,7 @@ var TPV = jQuery.Class({
 		});
 		$('#btnReturnTicket').click(function(){
                      //   alert(58+ " Click en boton devolucion");
-			_TPV.ticketState=2;
+			/*_TPV.ticketState=2;
 			_TPV.ticket.setButtonState(false);
 			devolucion=1;
 			var id = _TPV.ticket.idsource;
@@ -1343,7 +1344,17 @@ var TPV = jQuery.Class({
 			_TPV.ticket.oldproducts = lines;
 			_TPV.ticket.discount_percent = discount_percent;
 			_TPV.ticket.discount_qty = discount_qty;
-			_TPV.ticket.type=1;
+			_TPV.ticket.type=1;*/
+            var checked = [];
+            $("input[name='returnProducts[]']:checked").each(function ()
+            {
+                checked.push(parseInt($(this).val()));
+            });
+            var data = {
+            	"productIds" : checked
+			}
+            var result = ajaxDataSend('returnProducts',data);
+            console.log(result);
 		});
 		$('#btnViewTicket').click(function() {
                         devolucion=0;
@@ -1426,7 +1437,7 @@ var TPV = jQuery.Class({
 	        	}
 	        	else if(result.length==1)
 	        	{
-	        		
+
 	        		_TPV.ticket.addLine(result[0]['id']);
 	        		$('#divSelectProducts').hide();
 	        		if(_TPV.defaultConfig['terminal']['barcode'] == 1){
@@ -1935,7 +1946,7 @@ var TPV = jQuery.Class({
 	        	    		discount = 1-line['discount']/100;
 	        	    	//line['price_ttx']  = line['price_ttx']*(1+discount);
 	        	    	total_dis= total_dis + parseFloat(line['remise']) * ((parseFloat(line['tva_tx']) + parseFloat(line['localtax1_tx']) + parseFloat(line['localtax2_tx']))/100+1)
-	        	    	var tr = '<tr id="ticketLine'+line['idProduct']+'"><td class="idCol" >'+line['idProduct']+'</td><td class="description">'+line['label']+'</td><td class="discount">'+line['discount']+'%</td><td class="price">'+displayPrice(line['total_ttc']/line['cant'])+'</td><td class="cant">'+line['cant']+'</td><td class="total">'+displayPrice(line['total_ttc'])+'</td>';
+	        	    	var tr = '<tr id="ticketLine'+line['idProduct']+'"><td class="idCol" >'+line['idProduct']+'</td><td class="description">'+line['label']+'</td><td class="discount">'+line['discount']+'%</td><td class="price">'+displayPrice(line['total_ttc']/line['cant'])+'</td><td class="cant">'+line['cant']+'</td><td class="total">'+displayPrice(line['total_ttc'])+'</td><td><input type="checkbox" name="returnProducts[]" value="'+line['idProduct']+'"/></td>';
 	        	    	tr = tr + '</tr>';
 	        	    		        	    	
 	        	    	$('#tablaTicket > tbody:last').prepend(tr);

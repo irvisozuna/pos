@@ -5471,5 +5471,37 @@ dol_syslog('ESTE BANKID::'.$bankaccountid);
             }
             return $res;
         }
+
+        //Devoluciones
+    public static function devolverProduct($datos){
+        global $db,$conf;
+        $sql =  "SELECT qty  AS quedan
+                        FROM
+                                ".MAIN_DB_PREFIX."pos_ticketdet
+                        WHERE
+                                fk_product = '".$datos["idProduct"]."'
+                        AND fk_ticket = '".$datos["idTicket"]."' ";
+        dol_syslog('validaCantidad::'.$sql);
+        $resql = $db->query($sql);
+        $stock = $db->fetch_object($resql);
+        if($stock->quedan==null){
+            $sql="SELECT qty as quedan
+					FROM
+					        ".MAIN_DB_PREFIX."facturedet
+					WHERE
+					        fk_product = '".$datos["idProduct"]."'
+					AND fk_facture = '".$datos["idTicket"]."' ";
+            dol_syslog('validaCantidad::'.$sql);
+            $resql = $db->query($sql);
+            $stock = $db->fetch_object($resql);
+        }
+        $res = array();
+        if($datos["cantProduct"] <= $stock->quedan){
+            $res["data"] = "true";
+        }else{
+            $res["data"] = "false";
+        }
+        return $res;
+    }
 }
 ?>
